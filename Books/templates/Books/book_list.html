@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book List{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row gx-5 align-items-center">
+        <div class="col-md-6">
+            <h1>Welcome to Django Library Management Project</h1>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        </div>
+        <div class="col-md-6">
+            <img class="img-fluid rounded shadow" src="{% static 'bg.jpg' %}" alt="Library Image">
+        </div>
+    </div>
+</div>
+<h2 class="text-center my-4">Book List</h2>
+
+<div class="filters mb-4">
+    <form method="get" action="{% url 'book_list' %}" class="d-flex justify-content-center">
+        <label for="category" class="me-2">Filter by Category:</label>
+        <select name="category" id="category" class="form-select w-auto" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.name }}" {% if category.name == request.GET.category %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            {% if books %}
+                {% for book in books %}
+                <div class="col-sm-4 col-md-4 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm" style="height: 500px;">
+                        <img src="{{ book.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ book.title }}">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title"><a href="{% url 'book_detail' book.id %}" class="text-decoration-none text-dark">{{ book.title }}</a></h5>
+                            <p class="card-text flex-grow-1">{{ book.description|truncatewords:20 }}</p>
+                            <p class="card-text"><strong>Borrow Price:</strong> {{ book.borrowing_price }} Taka</p>
+                            <p class="card-text"><strong>Categories:</strong>
+                                {% for category in book.categories.all %}
+                                    {{ category.name }}
+                                {% endfor %}
+                            </p>
+                            <a class="btn btn-danger text-white" href="{% url 'book_detail' book.id %}">Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">No books found in this category.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if messages %}
+    <div class="modal" id="messageModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title">Messages</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% for message in messages %}
+                    <p class="p-3">{{ message }}</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer custom-modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="container">
+    <div class="custom-border">
+        {% if messages %}
+        {% for m in messages %}
+        <p {% if m.tags %} class="{{ m.tags }}" {% endif %}>{{ m }}</p>
+        {% endfor %}
+        {% endif %}
+
+        {% load crispy_forms_tags %}
+        <form action="" style="width:80%; margin:auto" method="post">
+            <div class="mb-5 text-center">
+                <h1>Create a new account</h1>
+            </div>
+            {% csrf_token %}
+
+            <!--  {{ form|crispy }} -->
+            {% for fm in form %}
+            <div class="mb-3">
+                {{ fm.label }}
+                {{ fm }}
+                <div class="text-danger">{{ fm.errors | striptags }}</div>
+            </div>
+            {% endfor %}
+            <br>
+            <button type="submit" class="btn btn-success">Sign Up</button>
+            <br>
+            <small>Already have an account? <a href="{% url 'user_login' %}">Login</a></small>
+        </form>
+    </div>
+</div>
+
+{% if messages %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+        messageModal.show();
+    });
+</script>
+{% endif %}
+
+<style>
+    .custom-border {
+        width: 60%;
+        margin: auto;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        padding: 20px;
+        margin-top: 50px;
+  
+    }
+
+    .custom-modal-header {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .custom-modal-footer {
+        background-color: #f1f1f1;
+    }
+</style>
+{% endblock content %}

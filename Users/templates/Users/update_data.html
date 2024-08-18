@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    {% load crispy_forms_tags %}
+    <form action="" style="width:50%; margin:auto" method="post">
+        <div class="mb-5">
+            <h1>Change Your Personal Information</h1>
+        </div>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        {% for er in form.non_field_errors %}
+        <small>
+            <p class="bg-danger p-2">{{er}}</p>
+        </small>
+        {% endfor %}
+        {% endif %}
+        <!--  {{ form|crispy }} -->
+        {% for fm in form %}
+        {{fm.label}}
+        {{fm}}
+        {{fm.errors | striptags}}
+        {% endfor %} 
+        <br>
+        <button type="submit" class="btn btn-warning">Change Data</button>
+    </form>
+</div>
+
+
+{% endblock %}

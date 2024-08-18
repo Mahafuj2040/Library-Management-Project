@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+ 
+    .form-container {
+        width: 40%;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        height: 400px
+    }
+
+
+    .form-icon {
+        font-size: 3.8rem; 
+        color: black; 
+        margin: 10px; 
+    }
+</style>
+{% load crispy_forms_tags %}
+<div class="mt-5 pt-5">
+    <div class="form-container ">
+        <form action="" method="post">
+            <div class="mb-5 text-center">
+                <i class="fa-regular fa-circle-user form-icon"></i> <!-- Icon with adjusted size and color -->
+            </div>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            {% for er in form.non_field_errors %}
+            <small>
+                <p class="bg-danger p-2">{{ er }}</p>
+            </small>
+            {% endfor %}
+            {% endif %}
+            <!--  {{ form|crispy }} -->
+            {% for fm in form %}
+            {{ fm.label }}
+            {{ fm }}
+            {{ fm.errors | striptags }}
+            {% endfor %}
+            <br>
+            <button type="submit" class="btn btn-warning">Log in</button>
+        </form>
+    </div>
+
+</div>
+{% endblock content %}

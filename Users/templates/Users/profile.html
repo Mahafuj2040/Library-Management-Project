@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-danger">{{ user.first_name }} {{user.last_name}}'s Profile</h2>
+    <h5>Email: {{ user.email }}</h5>
+    <h5>Balance: <a class="font-weight-bold">{{ user.profile.balance }}</a> Taka</h5>
+    <br>
+    <br>
+
+    <div>
+        <h3>Borrowed Books:</h3>
+        {% if borrowed_books %}
+            <table class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Book Title</th>
+                        <th scope="col">Borrowed Date</th>
+                        <th scope="col">Return Status</th>
+                        <th scope="col">Return Button</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrowed_book in borrowed_books %}
+                    <tr>
+                        <td>{{ borrowed_book.id }}</td>
+                        <td>{{ borrowed_book.book.title }}</td>
+                        <td>{{ borrowed_book.borrow_date }}</td>
+                        <td>
+                            {% if borrowed_book.returned %}
+                                Returned
+                            {% else %}
+                                Not Returned
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not borrowed_book.returned %}
+                            <form method="post" action="{% url 'return_book' borrowed_book.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Return</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>You haven't borrowed any books yet.</p>
+        {% endif %}
+
+        <h3>Transaction History:</h3>
+        {% if transactions %}
+            <table class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Balance After Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.date }}</td>
+                        <td>{{ transaction.transaction_type|capfirst }}</td>
+                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.balance_after_transaction }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No transactions yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

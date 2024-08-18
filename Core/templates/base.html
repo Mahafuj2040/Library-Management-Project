@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Library Management System</title>
+    <style>
+        /* Navbar Link Hover Effect */
+        .navbar-nav .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: #007bff;
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #007bff;
+        }
+
+        .navbar-nav .nav-link:hover::before {
+            width: 100%;
+            left: 0;
+        }
+
+        .btn-outline-info:hover,
+        .btn-outline-danger:hover,
+        .btn-warning:hover,
+        .btn-success:hover {
+            color: white;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+        }
+
+        .modal-header {
+            background-color: #007bff;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-body .alert {
+            border: 1px solid #007bff;
+        }
+
+        /* Flexbox for full height */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body style="background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <div class="wrapper">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="" style="text-decoration: none; pointer-events: none; color: inherit;">Library System</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link text-info" href="{% url 'book_list' %}">Books</a>
+                        </li>
+                        {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'change_data' %}">Update Data</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'pass_change' %}">Change Password</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'deposit_money' %}">Deposit Money</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="navbar-text text-dark me-3"><strong>{{ user.first_name }} {{ user.last_name }}</strong>'s Profile</span>
+                        </li>
+                        <li class="nav-item me-3">
+                            <span class="navbar-text text-secondary">Balance: <strong>{{ user.profile.balance }}</strong> Taka</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-info me-2" href="{% url 'profile' %}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-danger" href="{% url 'user_logout' %}">Log Out</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-warning text-white me-2" href="{% url 'signup' %}">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-success text-white" href="{% url 'user_login' %}">Login</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        {% if messages %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+                messageModal.show();
+            });
+        </script>
+        {% endif %}
+
+        {% if messages %}
+        <div class="modal fade" id="messageModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header text-white">
+                        <h5 class="modal-title">Messages</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% for message in messages %}
+                        <div class="alert alert-info" role="alert">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <main class="container my-5">
+            {% block content %}
+            {% endblock content %}
+        </main>
+
+        <footer class="bg-dark text-white py-3">
+            <div class="container text-center">
+                <p class="mb-0">&copy; 2024 Library Management System. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+
+</html>
