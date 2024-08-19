@@ -174,3 +174,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env("USER_EMAIL")
 EMAIL_HOST_PASSWORD = env("USER_PASSWORD")
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://library-management-project-qln9.onrender.com',
+]
